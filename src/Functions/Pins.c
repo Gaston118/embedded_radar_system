@@ -5,7 +5,7 @@
  *      Author: GastonCapdevila
  */
 
-#include "Headers/Pins.h"
+#include "../Headers/Pins.h"
 
 void configPins(void){
 	// Nothing
