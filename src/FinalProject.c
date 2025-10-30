@@ -4,7 +4,8 @@
 
 // Includes
 #include "LPC17xx.h"
-#include "Headers/Pins.h"
+
+#include "headers/Pins.h"
 
 int main(void) {
 	configPins();
