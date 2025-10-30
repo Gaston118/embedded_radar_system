@@ -4,13 +4,15 @@
 
 // Includes
 #include "LPC17xx.h"
-
-#include "headers/Pins.h"
+#include "headers/servo.h"
 
 int main(void) {
-	configPins();
-    while(1) {
 
+	SystemInit();
+	ServoInit();
+
+    while(1) {
+    	MoverServo(10, 10000); // PASO = 10us - DELAY = 10ms
     }
     return 0 ;
 }
