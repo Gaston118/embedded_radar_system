@@ -10,9 +10,18 @@
 
 #define ADC_FREC 100000 	// 100KHz
 
-void ConfigADC(void);
+void ADCInit(uint8_t modo);
+
+void ConfigADC0(void);
+
+void ConfigADC1(void);
+
 void ConfigEINT0(void);
-uint8_t NewValueAdc(void);
-uint32_t ADC_GetServoStep(void);
+
+void SetServoStep(uint32_t step);
+
+uint32_t GetServoStep(void);
+
+uint32_t GetServoDelay(void);
 
 #endif /* HEADERS_ADC_H_ */

@@ -13,10 +13,16 @@
 #define SERVO_PW_MAX 		2400	// SERVO MAX PULSE WIDTH 2.4 ms
 #define SERVO_PW_CENTER   	1500
 
-void ServoInit(void);									// INICIALIZACION DEL SERVO
-void delay_ms(uint32_t ms);								// FUNCION DELAY
-void ConfigServoTimer(void);							// CONFIGURACION DEL TIMER QUE MANEJA LA PWM
-void ServoSetPulse(uint32_t pw);						// FUNCION PARA CAMBIAR EL PW (MOVER MOTOR)
-void MoverServo(uint32_t delta_pw, uint32_t delay_ms);	// FUNCION PARA MOVER EL SERVO
+void ServoInit(void);											// INICIALIZACION DEL SERVO
+
+void DelayMs(uint32_t ms);										// FUNCION DELAY
+
+void ConfigServoTimer(void);									// CONFIGURACION DEL TIMER QUE MANEJA LA PWM
+
+void ServoSetPulse(uint32_t pw);								// FUNCION PARA CAMBIAR EL PW (MOVER MOTOR)
+
+void MoverServoCompleto(uint32_t delta_pw, uint32_t delay_ms);	// FUNCION PARA MOVER EL SERVO
+
+void MoverServoUnPaso(uint32_t delta_pw, uint32_t delay_ms);	// FUNCION PARA MOVER EL SERVO UN PASO
 
 #endif /* HEADERS_SERVO_H_ */

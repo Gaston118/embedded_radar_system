@@ -7,19 +7,16 @@
 #include "headers/servo.h"
 #include "headers/adc.h"
 
+#define MODO_ADC 1 // SELECCIONAR MODO DISPARO ADC 0=BURST, 1=EINT0
+
 int main(void) {
-	uint32_t delay_ms = 10;   // Velocidad inicial
-	uint32_t step_us = 10;    // Paso inicial
 
 	SystemInit();
 	ServoInit();
-	ConfigADC();
+	ADCInit(MODO_ADC);
 
     while(1) {
-    	if(NewValueAdc()){
-    		step_us = ADC_GetServoStep();
-    	}
-    	MoverServo(step_us, delay_ms);
+    	MoverServoCompleto(GetServoStep(), GetServoDelay());
     }
     return 0 ;
 }

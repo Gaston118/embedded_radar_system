@@ -10,10 +10,42 @@
 #include "lpc17xx_exti.h"
 #include "../headers/adc.h"
 
-volatile uint8_t 	new_adc_value = 0;
-volatile uint32_t 	adc_value = 0;
+volatile uint32_t servo_step_us 	= 10;    	// Paso inicial
+volatile uint32_t servo_delay_ms 	= 10;   	// Velocidad inicial
 
-void ConfigADC(void){
+void ADCInit(uint8_t modo){
+	if(modo == 0) {
+		ConfigADC0(); // MODO BURST
+	} else {
+		ConfigADC1(); // MODO EINT0
+	}
+}
+
+void ConfigADC0(void){
+    PINSEL_CFG_Type pincfg = {0};
+
+    // AD0.0 -> P0.23
+    pincfg.Portnum     = 0;
+    pincfg.Pinnum      = 23;
+    pincfg.Funcnum     = 1;  // Función AD0.0
+    pincfg.Pinmode     = PINSEL_PINMODE_TRISTATE;
+    pincfg.OpenDrain   = 0;
+    PINSEL_ConfigPin(&pincfg);
+
+    // Inicializar ADC y habilitar canal 0
+    ADC_Init(LPC_ADC, ADC_FREC);
+
+    ADC_ChannelCmd(LPC_ADC, ADC_CHANNEL_0, ENABLE);
+
+    // Modo burst: conversiones continuas por hardware
+    ADC_BurstCmd(LPC_ADC, ENABLE);
+
+    ADC_IntConfig(LPC_ADC, ADC_ADINTEN0, ENABLE);
+
+    NVIC_EnableIRQ(ADC_IRQn);
+}
+
+void ConfigADC1(void){
 
 	// ========== CONFIGURAMOS EINT0 ==========
 	ConfigEINT0();
@@ -69,32 +101,30 @@ void ConfigEINT0(void){
 void ADC_IRQHandler(void) {
     // Verificar si la conversión del canal 0 está completa
     if(ADC_ChannelGetStatus(LPC_ADC, ADC_CHANNEL_0, ADC_DATA_DONE)) {
-
+    	uint32_t adc_value = 0;
         // Leer el valor convertido (esto limpia el flag DONE automáticamente)
         adc_value = ADC_ChannelGetData(LPC_ADC, ADC_CHANNEL_0);
 
-        new_adc_value = 1;
+        SetServoStep(adc_value);
     }
 }
 
-uint8_t NewValueAdc(void) {
-    if(new_adc_value) {
-    	new_adc_value = 0;  // Limpiar el flag
-        return 1;
-    }
-    return 0;
-}
-
-// Retorna el delta_pw en us para usar en MoverServo()
 // ADC = 0    -> paso = 5us  (PASOS PEQUEÑOS, movimiento suave)
 // ADC = 2047 -> paso = 25us (PASOS MEDIOS)
 // ADC = 4095 -> paso = 50us (PASOS GRANDES, movimiento más brusco)
-uint32_t ADC_GetServoStep(void) {
-    // Mapeo: ADC (0-4095) -> Paso (5-50 us)
-    uint32_t step_us = 5 + ((uint32_t)adc_value * 45) / 4095;
+void SetServoStep(uint32_t adc_value) {
+	uint32_t step_us = 5 + ((uint32_t)adc_value * 45) / 4095;
 
-    if(step_us < 5) step_us = 5;    // Mínimo 5us
-    if(step_us > 50) step_us = 50;  // Máximo 50us
+	if(step_us < 5) step_us = 5;    // Mínimo 5us
+	if(step_us > 50) step_us = 50;  // Máximo 50us
 
-    return step_us;
+	servo_step_us = step_us;
+}
+
+uint32_t GetServoStep(void){
+	return servo_step_us;
+}
+
+uint32_t GetServoDelay(void){
+	return servo_delay_ms;
 }
