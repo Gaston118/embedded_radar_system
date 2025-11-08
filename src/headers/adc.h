@@ -8,11 +8,9 @@
 #ifndef HEADERS_ADC_H_
 #define HEADERS_ADC_H_
 
-#define ADC_FREC 100000 	// 100KHz
+#define ADC_FREC 1000
 
-void ADCInit(uint8_t modo);
-
-void ConfigADC0(void);
+void ADCInit(void);
 
 void ConfigADC1(void);
 

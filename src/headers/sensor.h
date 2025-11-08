@@ -20,5 +20,14 @@ void ConfigCaptureSensor(void);
 
 void ConfigTimerSensor(void);
 
+void ConfigTriggerGPIO(void);
+
+void SensorTrigger(void);
+
+void SetCapFlag(uint8_t valor);
+
+uint8_t GetCapFlag(void);
+
+uint32_t GetLastDistance(void);
 
 #endif /* HEADERS_SENSOR_H_ */
