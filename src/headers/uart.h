@@ -12,6 +12,6 @@
 #include "../headers/pcb.h"
 
 void UARTInit(void);
-void SendValorADC(void);
+void SendValorADC(uint16_t valor);
 
 #endif /* HEADERS_UART_H_ */

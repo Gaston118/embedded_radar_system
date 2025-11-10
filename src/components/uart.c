@@ -11,12 +11,12 @@ void UARTInit(void){
 	ConfigUART();
 }
 
-void SendValorADC(void){
+void SendValorADC(uint16_t valor){
 	// 1. Convertimos la dirección de 'valor' a un puntero a byte (uint8_t*).
-	uint16_t *data_ptr = (uint16_t*)&valor;
+	uint8_t *data_ptr = (uint8_t*)&valor;
 
 	// 2. Iteramos 2 veces (ya que sizeof(uint16_t) es 2 bytes).
-	for (int i = 0; i < sizeof(uint16_t); i++) {
+	for (int i = 0; i < sizeof(uint8_t); i++) {
 	      // 3. Espera a que UART1 esté lista para transmitir (busy-wait).
 	        // (Casting a LPC_UART_TypeDef* como en tu ejemplo)
 	      while (UART_CheckBusy((LPC_UART_TypeDef *)LPC_UART1));

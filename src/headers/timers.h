@@ -12,6 +12,7 @@
 #include "../headers/servo.h"
 #include "../headers/dac.h"
 #include "../headers/dma.h"
+#include "../headers/uart.h"
 
 void ConfigServoTimer();
 void ConfigDACTimer();

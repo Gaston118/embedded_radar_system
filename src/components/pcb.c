@@ -81,18 +81,18 @@ void ConfigUART(void) {
     pincfg.Portnum = 0;
     pincfg.Pinnum = 15;  // P0.15 como TXD1
 
-    PINSEL_ConfigPin(&pin_cfg);
+    PINSEL_ConfigPin(&pincfg);
 
     UART_CFG_Type uartcfg;
 
     // Configuración de la velocidad de transmisión y otros parámetros de UART
     uartcfg.Baud_rate = 9600;
-    uartcfg.Databits = UART_DATABIT_16;
+    uartcfg.Databits = UART_DATABIT_8;
     uartcfg.Parity = UART_PARITY_NONE;
     uartcfg.Stopbits = UART_STOPBIT_1;
 
     // Inicializar UART1 con la configuración especificada (casting a LPC_UART_TypeDef*)
-    UART_Init((LPC_UART_TypeDef *)LPC_UART1, &uart_cfg);
+    UART_Init((LPC_UART_TypeDef *)LPC_UART1, &uartcfg);
 
     // Habilitar la transmisión UART (casting a LPC_UART_TypeDef*)
     UART_TxCmd((LPC_UART_TypeDef *)LPC_UART1, ENABLE);
