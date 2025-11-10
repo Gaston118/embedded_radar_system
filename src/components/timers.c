@@ -14,7 +14,7 @@ void ConfigDACTimer(){
 	TIM_MATCHCFG_Type matchcfg = {0};
 
 	timercfg0.PrescaleOption = TIM_PRESCALE_USVAL;
-	timercfg0.PrescaleValue = 1; // 1 us
+	timercfg0.PrescaleValue = 1000; // 1 ms
 	TIM_Init(LPC_TIM0, TIM_TIMER_MODE, &timercfg0);
 
 	// MAT0.0 DEFINIDO POR EL PERIODO, ES EL QUE SE PONE EN ALTO.
@@ -27,20 +27,26 @@ void ConfigDACTimer(){
 	TIM_ConfigMatch(LPC_TIM0, &matchcfg);
 	NVIC_EnableIRQ(TIMER0_IRQn);
 	TIM_Cmd(LPC_TIM0, ENABLE);
+	NVIC_SetPriority(TIMER0_IRQn, 2);
 }
 
 void TIMER0_IRQHandler(void){
 	if(TIM_GetIntStatus(LPC_TIM0, TIM_MR0_INT)){
 		TIM_ClearIntPending(LPC_TIM0, TIM_MR0_INT);
-		uint32_t valor = muestras[index_buffer] >> 4;
+		uint32_t valor_bruto = muestras[index_buffer];
+		uint32_t valor = (valor_bruto >> 4) & 0xFFF;
+		uint32_t valor_to_dac = valor >> 2;
+
+		DAC_UpdateValue(LPC_DAC, valor_to_dac);
+		SendValorADC((uint16_t)valor_to_dac);
+		SendVelocidadServo((uint16_t)valor);
 		index_buffer++;
-		DAC_UpdateValue(LPC_DAC, valor);
-		SendValorADC(valor);
 		if (index_buffer >= ADC_BUFFER_SIZE){
 		index_buffer = 0;
 		}
 	}
 }
+
 // --------------------------------- TIMER 2 - SERVOMOTOR -----------------------------------------------
 // ------------------------------------------------------------------------------------------------------
 void ConfigServoTimer(void){
@@ -72,28 +78,23 @@ void ConfigServoTimer(void){
 
 	// MAT2.2 SE ENCARGA DE MOVER EL SERVO LLAMANDO A LAS FUNCIONES CORRESPONDIENTES.
 	matchcfg.MatchChannel = 2;
-	matchcfg.IntOnMatch = ENABLE;
+	matchcfg.IntOnMatch = DISABLE;
 	matchcfg.ResetOnMatch = DISABLE;
 	matchcfg.StopOnMatch = DISABLE;
 	matchcfg.ExtMatchOutputType = TIM_EXTMATCH_NOTHING;
-	matchcfg.MatchValue = 100; //0.1ms, para que el servo no deje de moverse.
+	matchcfg.MatchValue = 10000;
 	TIM_ConfigMatch(LPC_TIM2, &matchcfg);
 
 	LPC_TIM2->EMR &= ~(1 << 0); // Iniciar MAT2.0 en bajo
 	NVIC_EnableIRQ(TIMER2_IRQn);
 	TIM_Cmd(LPC_TIM2, ENABLE);
+	NVIC_SetPriority(TIMER2_IRQn, 0);
 }
 
 void TIMER2_IRQHandler(void){
 	if(TIM_GetIntStatus(LPC_TIM2, TIM_MR2_INT)){ // INTERRUPCIÓN DE MAT2.2
 		TIM_ClearIntPending(LPC_TIM2, TIM_MR2_INT);
-		uint32_t suma = 0;
-		for(int i = 0; i<ADC_BUFFER_SIZE;i++){
-			suma += muestras[i];
-		}
-		uint32_t promedio = suma / ADC_BUFFER_SIZE;
-		SetServoStep(promedio);
-		MoverServoUnPaso(GetServoStep(), GetServoDelay());
+//		MoverServoUnPaso(GetServoStep(), GetServoDelay());
 	}
 	if(TIM_GetIntStatus(LPC_TIM2, TIM_MR1_INT)){ // INTERRRUPCION DE MAT2.1
 		TIM_ClearIntPending(LPC_TIM2, TIM_MR1_INT);

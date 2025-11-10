@@ -25,7 +25,7 @@ void ConfigADC1(void){
 	pincfg.Portnum 		= 0;
 	pincfg.Pinnum 		= 25; //P0.25 como ADC
 	pincfg.Funcnum 		= 1;  // Función AD0.2
-	pincfg.Pinmode 		= 0;
+	pincfg.Pinmode 		= 2;
 	pincfg.OpenDrain 	= 0;
 	PINSEL_ConfigPin(&pincfg);
 	ADC_Init(LPC_ADC, ADC_FREC);

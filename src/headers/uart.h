@@ -13,5 +13,6 @@
 
 void UARTInit(void);
 void SendValorADC(uint16_t valor);
+void SendVelocidadServo(uint16_t valor_adc);
 
 #endif /* HEADERS_UART_H_ */

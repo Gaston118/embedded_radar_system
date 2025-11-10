@@ -11,7 +11,7 @@
 #include "../headers/timers.h"
 #include "../headers/pcb.h"
 
-#define DAC_REFRESH_RATE 50000 //50K us = 50ms
+#define DAC_REFRESH_RATE 5000
 
 void DACInit(void);
 

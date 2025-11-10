@@ -10,7 +10,7 @@
 
 #include "../headers/pcb.h"
 
-#define ADC_FREC 1000000
+#define ADC_FREC 10000
 
 void ADCInit(void);
 
