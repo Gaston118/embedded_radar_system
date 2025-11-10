@@ -8,13 +8,11 @@
 #ifndef HEADERS_ADC_H_
 #define HEADERS_ADC_H_
 
-#define ADC_FREC 1000
+#include "../headers/pcb.h"
+
+#define ADC_FREC 1000000
 
 void ADCInit(void);
-
-void ConfigADC1(void);
-
-void ConfigEINT0(void);
 
 void SetServoStep(uint32_t step);
 
