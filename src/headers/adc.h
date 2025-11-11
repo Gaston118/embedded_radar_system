@@ -9,6 +9,7 @@
 #define HEADERS_ADC_H_
 
 #include "../headers/pcb.h"
+#include "lpc17xx_adc.h"
 
 #define ADC_FREC 10000
 

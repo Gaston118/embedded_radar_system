@@ -5,7 +5,6 @@
  *      Author: GastonCapdevila
  */
 
-#include "lpc17xx_gpdma.h"
 #include "../headers/dma.h"
 
 volatile uint8_t index_buffer = 0;
@@ -21,12 +20,12 @@ void ConfigDMA(void) {
 
 	    LLI0.SrcAddr = (uint32_t)&(LPC_ADC->ADDR2);
 	    LLI0.DstAddr = (uint32_t)muestras;
-	    LLI0.NextLLI = (uint32_t)&LLI0; // circular
-	    LLI0.Control = (ADC_BUFFER_SIZE << 0)  // tamaño de la transferencia
-	                 | (2 << 18)               // Ancho origen (32 bits)
-	                 | (2 << 21)               // Ancho destino (32 bits)
-	                 | (1 << 27)               // Incrementar destino
-	                 | (1 << 31);              // Terminal count interrupt
+	    LLI0.NextLLI = (uint32_t)&LLI0; 		// circular
+	    LLI0.Control = (ADC_BUFFER_SIZE << 0)  	// tamaño de la transferencia
+	                 | (2 << 18)               	// Ancho origen (32 bits)
+	                 | (2 << 21)               	// Ancho destino (32 bits)
+	                 | (1 << 27)               	// Incrementar destino
+	                 | (1 << 31);              	// Terminal count interrupt
 
 
 	    GPDMA_Channel_CFG_Type dmaCfg;

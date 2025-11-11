@@ -7,6 +7,11 @@
 
 #include "../headers/timers.h"
 
+volatile uint8_t  captura_completa  = 0;
+volatile uint32_t t_start           = 0;
+volatile uint32_t t_end             = 0;
+volatile uint32_t write_index       = 0;
+
 // --------------------------------- TIMER 0 - DAC -----------------------------------------------
 // ------------------------------------------------------------------------------------------------------
 void ConfigDACTimer(){
@@ -40,9 +45,15 @@ void TIMER0_IRQHandler(void){
 		DAC_UpdateValue(LPC_DAC, valor_to_dac);
 		SendValorADC((uint16_t)valor_to_dac);
 		SendVelocidadServo((uint16_t)valor);
+		SendDistancia(DIST_BUFFER[index_buffer_distance]);
+
+		index_buffer_distance++;
+		if (index_buffer_distance >= BUFFER_SIZE){
+			index_buffer_distance = 0;
+		}
 		index_buffer++;
 		if (index_buffer >= ADC_BUFFER_SIZE){
-		index_buffer = 0;
+			index_buffer = 0;
 		}
 	}
 }
@@ -82,7 +93,7 @@ void ConfigServoTimer(void){
 	matchcfg.ResetOnMatch = DISABLE;
 	matchcfg.StopOnMatch = DISABLE;
 	matchcfg.ExtMatchOutputType = TIM_EXTMATCH_NOTHING;
-	matchcfg.MatchValue = 10000;
+	matchcfg.MatchValue = 1000;
 	TIM_ConfigMatch(LPC_TIM2, &matchcfg);
 
 	LPC_TIM2->EMR &= ~(1 << 0); // Iniciar MAT2.0 en bajo
@@ -94,7 +105,7 @@ void ConfigServoTimer(void){
 void TIMER2_IRQHandler(void){
 	if(TIM_GetIntStatus(LPC_TIM2, TIM_MR2_INT)){ // INTERRUPCIÓN DE MAT2.2
 		TIM_ClearIntPending(LPC_TIM2, TIM_MR2_INT);
-//		MoverServoUnPaso(GetServoStep(), GetServoDelay());
+		MoverServoUnPaso(GetServoStep(), GetServoDelay());
 	}
 	if(TIM_GetIntStatus(LPC_TIM2, TIM_MR1_INT)){ // INTERRRUPCION DE MAT2.1
 		TIM_ClearIntPending(LPC_TIM2, TIM_MR1_INT);
@@ -102,5 +113,49 @@ void TIMER2_IRQHandler(void){
 	}
 }
 
+// --------------------------------- TIMER 3 - SENSOR ---------------------------------------------------
 // ------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------
+void ConfigSensorTimer(void){
+	TIM_TIMERCFG_Type timercfg = {0};
+	TIM_CAPTURECFG_Type captureCfg = {0};
+
+	// =========== CONFIGURACION CAP3.1 ===================
+	timercfg.PrescaleOption = TIM_PRESCALE_USVAL;
+	timercfg.PrescaleValue = 1;
+	TIM_Init(LPC_TIM3, TIM_TIMER_MODE, &timercfg);
+
+	captureCfg.CaptureChannel = 1;              // CAP3.1
+	captureCfg.RisingEdge     = ENABLE;
+	captureCfg.FallingEdge    = ENABLE;
+	captureCfg.IntOnCaption   = ENABLE;
+	TIM_ConfigCapture(LPC_TIM3, &captureCfg);
+
+	NVIC_EnableIRQ(TIMER3_IRQn);
+	NVIC_SetPriority(TIMER3_IRQn, 3);
+	TIM_Cmd(LPC_TIM3, ENABLE);
+}
+
+void TIMER3_IRQHandler(void) {
+    if (TIM_GetIntCaptureStatus(LPC_TIM3, 1)) {
+        static uint8_t flanco = 1;              // ENTRAMOS PRIMERO POR SUBIDA
+
+        if (flanco == 1) {
+            t_start = TIM_GetCaptureValue(LPC_TIM3, 1);
+            flanco = 0;
+            captura_completa = 0;
+        } else {
+            t_end = TIM_GetCaptureValue(LPC_TIM3, 1);
+            flanco = 1;
+            captura_completa = 1;
+
+            uint32_t distancia = (t_end - t_start) / 58; // DISTANCIA EN cm
+            DIST_BUFFER[write_index] = distancia;
+
+            write_index++;
+            if (write_index >= BUFFER_SIZE){
+                write_index = 0;
+          }
+        }
+        TIM_ClearIntCapturePending(LPC_TIM3, 1);
+    }
+}

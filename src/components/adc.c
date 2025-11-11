@@ -5,16 +5,30 @@
  *      Author: GastonCapdevila
  */
 
-#include "lpc17xx_adc.h"
 #include "../headers/adc.h"
-#include "stdio.h"
 
 volatile uint32_t servo_step_us 	= 10;    	// Paso inicial
 volatile uint32_t servo_delay_ms 	= 10;   	// Velocidad inicial
 
 void ADCInit(){
 	ConfigADC1();
-	ConfigEINT0(); // MODO EINT0, funciones modularizadas en pcb.c
+}
+
+void SetServoStep(uint32_t adc_value) {
+	uint32_t step_us = 5 + ((uint32_t)adc_value * 35) / 4095;
+
+	if(step_us < 5) step_us = 5;    // Mínimo 5us
+	if(step_us > 40) step_us = 40;  // Máximo 40us
+
+	servo_step_us = step_us;
+}
+
+uint32_t GetServoStep(void){
+	return servo_step_us;
+}
+
+uint32_t GetServoDelay(void){
+	return servo_delay_ms;
 }
 
 //void ADC_IRQHandler(void) {
@@ -28,21 +42,3 @@ void ADCInit(){
 //        LPC_ADC->ADGDR; //Lectura de bandera de status para sincronizar.
 //    }
 //}
-
-void SetServoStep(uint32_t adc_value) {
-	uint32_t step_us = 5 + ((uint32_t)adc_value * 35) / 4095;
-
-	if(step_us < 5) step_us = 5;    // Mínimo 5us
-	if(step_us > 40) step_us = 40;  // Máximo 50us
-
-	servo_step_us = step_us;
-}
-
-uint32_t GetServoStep(void){
-	//printf("Step: %lu\n", servo_step_us);
-	return servo_step_us;
-}
-
-uint32_t GetServoDelay(void){
-	return servo_delay_ms;
-}

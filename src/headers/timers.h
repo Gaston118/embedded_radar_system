@@ -15,8 +15,7 @@
 #include "../headers/uart.h"
 
 void ConfigServoTimer();
+void ConfigSensorTimer();
 void ConfigDACTimer();
-
-
 
 #endif /* HEADERS_TIMERS_H_ */
