@@ -50,6 +50,7 @@ void ConfigCaptureSensor(void){
     TIM_ConfigCapture(LPC_TIM3, &captureCfg);
 
     NVIC_EnableIRQ(TIMER3_IRQn);
+    NVIC_SetPriority(TIMER3_IRQn, 3);
 
     TIM_Cmd(LPC_TIM3, ENABLE);
 }

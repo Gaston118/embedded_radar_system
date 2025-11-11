@@ -11,6 +11,7 @@
 #include "lpc17xx_gpio.h"
 #include "headers/dac.h"
 #include "headers/dma.h"
+#include "headers/pcb.h"
 #include "stdio.h"
 
 int main(void) {
@@ -20,17 +21,14 @@ int main(void) {
 	SensorInit();
 	ADCInit();
 	DMAInit();
-	configDAC();
+	DACInit();
+	UARTInit();
 
     while(1) {
-    	SensorTrigger();
-    	//MoverServoCompleto(GetServoStep(), GetServoDelay());
-    	MoverServoUnPaso(GetServoStep(), GetServoDelay());
-    	uint32_t adc_value = 0;
-    	// Leer el valor convertido (esto limpia el flag DONE automáticamente)
-    	adc_value = ADC_ChannelGetData(LPC_ADC, ADC_CHANNEL_2);
-    	SetServoStep(adc_value);
-    	//printf("Distancia: %lu cm\n", GetLastDistance());
+    MoverServoUnPaso(GetServoStep(), GetServoDelay());
+   	uint32_t adc_value = 0;
+    adc_value = ADC_ChannelGetData(LPC_ADC, ADC_CHANNEL_2);
+    SetServoStep(adc_value);
     }
     return 0 ;
 }

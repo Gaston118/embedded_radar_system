@@ -7,7 +7,12 @@
 #ifndef HEADERS_DAC_H_
 #define HEADERS_DAC_H_
 
-void configDAC();
+#include "lpc17xx_dac.h"
+#include "../headers/timers.h"
+#include "../headers/pcb.h"
 
+#define DAC_REFRESH_RATE 5000
+
+void DACInit(void);
 
 #endif /* HEADERS_DAC_H_ */
