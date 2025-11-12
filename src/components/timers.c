@@ -94,7 +94,7 @@ void ConfigServoTimer(void){
 void TIMER2_IRQHandler(void){
 	if(TIM_GetIntStatus(LPC_TIM2, TIM_MR2_INT)){ // INTERRUPCIÓN DE MAT2.2
 		TIM_ClearIntPending(LPC_TIM2, TIM_MR2_INT);
-//		MoverServoUnPaso(GetServoStep(), GetServoDelay());
+		//MoverServoUnPaso(GetServoStep(), GetServoDelay());
 	}
 	if(TIM_GetIntStatus(LPC_TIM2, TIM_MR1_INT)){ // INTERRRUPCION DE MAT2.1
 		TIM_ClearIntPending(LPC_TIM2, TIM_MR1_INT);
