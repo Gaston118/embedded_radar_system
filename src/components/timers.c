@@ -40,17 +40,17 @@ void TIMER0_IRQHandler(void){
 		uint32_t valor_to_dac = valor >> 2;
 		DAC_UpdateValue(LPC_DAC, valor_to_dac);
 
-//		SendValorADC((uint16_t)valor_to_dac);
-//		SendVelocidadServo((uint16_t)valor);
-//		index_buffer++;
-//		if (index_buffer >= ADC_BUFFER_SIZE){
-//			index_buffer = 0;
-//		}
-//		SendDistancia(DIST_BUFFER[index_buffer_distance]);
-//		index_buffer_distance++;
-//		if (index_buffer_distance >= BUFFER_SIZE){
-//			index_buffer_distance = 0;
-//		}
+		SendValorADC((uint16_t)valor_to_dac);
+		SendVelocidadServo((uint16_t)valor);
+		index_buffer++;
+		if (index_buffer >= ADC_BUFFER_SIZE){
+			index_buffer = 0;
+		}
+		SendDistancia(DIST_BUFFER[index_buffer_distance]);
+		index_buffer_distance++;
+		if (index_buffer_distance >= BUFFER_SIZE){
+			index_buffer_distance = 0;
+		}
 	}
 }
 

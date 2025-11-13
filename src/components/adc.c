@@ -9,7 +9,7 @@
 #include "../headers/adc.h"
 #include "stdio.h"
 
-volatile uint32_t servo_step_us 	= 10;    	// Paso inicial
+volatile uint32_t servo_step_us 	= 20;    	// Paso inicial
 volatile uint32_t servo_delay_ms 	= 10;   	// Velocidad inicial
 
 void ADCInit(){
@@ -30,10 +30,10 @@ void ADCInit(){
 //}
 
 void SetServoStep(uint32_t adc_value) {
-	uint32_t step_us = 10 + ((uint32_t)adc_value * 45) / 4095;
+	uint32_t step_us = 20 + ((uint32_t)adc_value * 180) / 4095;
 
-	if(step_us < 10) step_us = 10;  // Mínimo 10us
-	if(step_us > 50) step_us = 50;  // Máximo 50us
+	if(step_us < 20) step_us 	= 20;  // Mínimo 20us
+	if(step_us > 200) step_us 	= 200; // Máximo 200us
 
 	servo_step_us = step_us;
 }
