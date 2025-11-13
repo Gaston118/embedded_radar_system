@@ -3,6 +3,8 @@
 
 #include "../headers/pcb.h"
 #include "../headers/timers.h"
+#include "lpc17xx_timer.h"
+#include "lpc17xx_pinsel.h"
 
 #define SERVO_PULSE_CYCLE   20000   // 20ms = 20000µs
 #define SERVO_PW_MIN        500    	// 1.0ms

@@ -13,7 +13,9 @@
 #include "lpc17xx_adc.h"
 #include "lpc17xx_dac.h"
 #include "lpc17xx_uart.h"
+#include "lpc17xx_gpio.h"
 #include "../headers/adc.h"
+#include "../headers/sensor.h"
 #include <stdio.h>
 
 void ConfigSERVO(void);
@@ -21,5 +23,7 @@ void ConfigEINT0(void);
 void ConfigADC1(void);
 void ConfigDAC(void);
 void ConfigUART(void);
+void ConfigSensorECHO(void);
+void ConfigSensorTRIGGER(void);
 
 #endif /* HEADERS_PCB_H_ */

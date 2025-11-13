@@ -8,8 +8,8 @@
 #include "../headers/dac.h"
 
 void DACInit(){
-	ConfigDAC(); //Modularizada en pcb.c
-	ConfigDACTimer(); //Modularizada en timers.c
+	ConfigDAC();
+	ConfigDACTimer();
 }
 
 
