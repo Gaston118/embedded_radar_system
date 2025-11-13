@@ -10,16 +10,11 @@
 
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_exti.h"
-#include "lpc17xx_adc.h"
-#include "lpc17xx_dac.h"
-#include "lpc17xx_uart.h"
-#include "../headers/adc.h"
+#include "lpc17xx_gpio.h"
+#include "lpc17xx_timer.h"
 #include <stdio.h>
 
-void ConfigSERVO(void);
+void ConfigTIMER0(void);
 void ConfigEINT0(void);
-void ConfigADC1(void);
-void ConfigDAC(void);
-void ConfigUART(void);
 
 #endif /* HEADERS_PCB_H_ */

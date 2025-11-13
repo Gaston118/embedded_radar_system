@@ -4,31 +4,22 @@
 
 // Includes
 #include "LPC17xx.h"
-#include "headers/servo.h"
-#include "headers/sensor.h"
-#include "headers/adc.h"
-#include "lpc17xx_adc.h"
 #include "lpc17xx_gpio.h"
-#include "headers/dac.h"
-#include "headers/dma.h"
 #include "headers/pcb.h"
 #include "stdio.h"
 
-int main(void) {
+/* * Array de simulación de tiempos de Echo.
+ * Total de muestras: 200
+ * Unidad: Microsegundos (us)
+ * Lógica: Tiempo = Distancia * 58
+ */
 
-	SystemInit();
-	ServoInit();
-	SensorInit();
-	ADCInit();
-	DMAInit();
-	DACInit();
-	UARTInit();
+int main(void) {
+	ConfigEINT0();
+	ConfigTIMER0();
 
     while(1) {
-    	MoverServoUnPaso(GetServoStep(), GetServoDelay());
-    	uint32_t adc_value = 0;
-    	adc_value = ADC_ChannelGetData(LPC_ADC, ADC_CHANNEL_2);
-    	SetServoStep(adc_value);
+    	__WFI;
     }
     return 0 ;
 }
