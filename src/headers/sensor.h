@@ -8,11 +8,11 @@
 #ifndef HEADERS_SENSOR_H_
 #define HEADERS_SENSOR_H_
 
-#define BUFFER_SIZE  	256    		 // N muestras guardadas
+#define BUFFER_SIZE  	10
 #define AHB_SRAM0_BASE  0x2007C000
-#define TRIGGER_PULSE 	10 			// 10 us
-#define NEXT_TRIGGER_IN 10000		// 10 ms
 #define DIST_BUFFER   	((volatile uint32_t*)AHB_SRAM0_BASE)
+#define ANGLE_BUFFER_ADDR (AHB_SRAM0_BASE + (BUFFER_SIZE * sizeof(uint32_t)))
+#define ANGLE_BUFFER    ((volatile uint32_t*)ANGLE_BUFFER_ADDR)
 
 void SensorInit(void);
 
@@ -23,11 +23,5 @@ void ConfigTimerSensor(void);
 void ConfigTriggerGPIO(void);
 
 void SensorTrigger(void);
-
-void SetCapFlag(uint8_t valor);
-
-uint8_t GetCapFlag(void);
-
-uint32_t GetLastDistance(void);
 
 #endif /* HEADERS_SENSOR_H_ */

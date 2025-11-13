@@ -30,10 +30,10 @@ void ADCInit(){
 //}
 
 void SetServoStep(uint32_t adc_value) {
-	uint32_t step_us = 5 + ((uint32_t)adc_value * 35) / 4095;
+	uint32_t step_us = 10 + ((uint32_t)adc_value * 45) / 4095;
 
-	if(step_us < 5) step_us = 5;    // Mínimo 5us
-	if(step_us > 40) step_us = 40;  // Máximo 50us
+	if(step_us < 10) step_us = 10;  // Mínimo 10us
+	if(step_us > 50) step_us = 50;  // Máximo 50us
 
 	servo_step_us = step_us;
 }

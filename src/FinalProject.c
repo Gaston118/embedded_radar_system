@@ -25,7 +25,7 @@ int main(void) {
 	UARTInit();
 
     while(1) {
-    	MoverServoUnPaso(GetServoStep(), GetServoDelay());
+    	MoverServoCompleto(GetServoStep(), 60); // DELAY DE 60ms SI O SI
     	uint32_t adc_value = 0;
     	adc_value = ADC_ChannelGetData(LPC_ADC, ADC_CHANNEL_2);
     	SetServoStep(adc_value);

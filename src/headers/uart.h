@@ -14,5 +14,6 @@
 void UARTInit(void);
 void SendValorADC(uint16_t valor);
 void SendVelocidadServo(uint16_t valor_adc);
+void SendDistancia(uint32_t distancia_cm);
 
 #endif /* HEADERS_UART_H_ */

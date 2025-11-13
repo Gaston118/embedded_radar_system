@@ -6,6 +6,8 @@
  */
 
 #include "../headers/timers.h"
+#include "../headers/sensor.h"
+volatile uint32_t index_buffer_distance = 0;
 
 // --------------------------------- TIMER 0 - DAC -----------------------------------------------
 // ------------------------------------------------------------------------------------------------------
@@ -36,14 +38,19 @@ void TIMER0_IRQHandler(void){
 		uint32_t valor_bruto = muestras[index_buffer];
 		uint32_t valor = (valor_bruto >> 4) & 0xFFF;
 		uint32_t valor_to_dac = valor >> 2;
-
 		DAC_UpdateValue(LPC_DAC, valor_to_dac);
-		SendValorADC((uint16_t)valor_to_dac);
-		SendVelocidadServo((uint16_t)valor);
-		index_buffer++;
-		if (index_buffer >= ADC_BUFFER_SIZE){
-		index_buffer = 0;
-		}
+
+//		SendValorADC((uint16_t)valor_to_dac);
+//		SendVelocidadServo((uint16_t)valor);
+//		index_buffer++;
+//		if (index_buffer >= ADC_BUFFER_SIZE){
+//			index_buffer = 0;
+//		}
+//		SendDistancia(DIST_BUFFER[index_buffer_distance]);
+//		index_buffer_distance++;
+//		if (index_buffer_distance >= BUFFER_SIZE){
+//			index_buffer_distance = 0;
+//		}
 	}
 }
 
@@ -75,16 +82,6 @@ void ConfigServoTimer(void){
 	matchcfg.MatchValue = SERVO_PW_CENTER;
 	TIM_ConfigMatch(LPC_TIM2, &matchcfg);
 
-
-	// MAT2.2 SE ENCARGA DE MOVER EL SERVO LLAMANDO A LAS FUNCIONES CORRESPONDIENTES.
-	matchcfg.MatchChannel = 2;
-	matchcfg.IntOnMatch = DISABLE;
-	matchcfg.ResetOnMatch = DISABLE;
-	matchcfg.StopOnMatch = DISABLE;
-	matchcfg.ExtMatchOutputType = TIM_EXTMATCH_NOTHING;
-	matchcfg.MatchValue = 10000;
-	TIM_ConfigMatch(LPC_TIM2, &matchcfg);
-
 	LPC_TIM2->EMR &= ~(1 << 0); // Iniciar MAT2.0 en bajo
 	NVIC_EnableIRQ(TIMER2_IRQn);
 	TIM_Cmd(LPC_TIM2, ENABLE);
@@ -92,15 +89,8 @@ void ConfigServoTimer(void){
 }
 
 void TIMER2_IRQHandler(void){
-	if(TIM_GetIntStatus(LPC_TIM2, TIM_MR2_INT)){ // INTERRUPCIÓN DE MAT2.2
-		TIM_ClearIntPending(LPC_TIM2, TIM_MR2_INT);
-		//MoverServoUnPaso(GetServoStep(), GetServoDelay());
-	}
 	if(TIM_GetIntStatus(LPC_TIM2, TIM_MR1_INT)){ // INTERRRUPCION DE MAT2.1
 		TIM_ClearIntPending(LPC_TIM2, TIM_MR1_INT);
 		LPC_TIM2->EMR &= ~(1 << 0); // BAJO MAT2.0
 	}
 }
-
-// ------------------------------------------------------------------------------------------------------
-// ------------------------------------------------------------------------------------------------------
